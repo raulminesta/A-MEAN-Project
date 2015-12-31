@@ -1,1 +1,14 @@
 <h1>Video Channel</h1>
+
+<div id='right-side'>
+    <div id='video-stream'></div>
+
+    <div id='webcam' ng-controller='WebcamController'>
+        <!-- video is on autoplay else it would be frozen on the first frame -->
+        <video autoplay></video>
+    </div>
+</div>
+
+<div id='left-side'>
+    <div id='chat-room'></div>
+</div>
