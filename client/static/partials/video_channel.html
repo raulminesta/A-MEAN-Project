@@ -3,9 +3,11 @@
 <div id='right-side'>
     <div id='video-stream'></div>
 
-    <div id='webcam' ng-controller='WebcamController'>
+    <div id='webcam' ng-controller='WebcamController as WC'>
         <!-- video is on autoplay else it would be frozen on the first frame -->
         <video autoplay></video>
+        <button ng-click='WC.videoOn()'>Video on</button>
+        <button ng-click='WC.videoOff()'>Video off</button>
     </div>
 </div>
 
