@@ -1,0 +1,10 @@
+body {
+  padding-top: 80px;
+}
+
+.inline2 {
+  display: inline-block;
+  width: 45%;
+  margin: 1.5em;
+  vertical-align: top;
+}

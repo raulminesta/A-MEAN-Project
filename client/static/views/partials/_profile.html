@@ -1,0 +1,58 @@
+<div class="page-header text-center">
+  <h1><span class="fa fa-anchor"></span> Profile Page</h1>
+  <button class="btn btn-danger btn-sm" ng-click="PC.logout()">Logout</button>
+</div>
+<div class="inline2">
+  <div class="row">
+    <!-- LOCAL INFORMATION -->
+    <div>
+      <div class="well">
+        <h3><span class="fa fa-user"></span> Local</h3>
+          <p>
+            <strong>id</strong>: <span ng-bind="PC.user._id"></span><br>
+            <strong>username</strong>: <span ng-bind="PC.user.username"></span><br>
+            <strong>email</strong>: <span ng-bind="PC.user.local.email"></span>
+            <br>
+            <strong>password</strong>: <span ng-bind="PC.user.local.password">
+            </span>
+          </p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="inline2">
+<!-- OTHER USERS -->
+  <h3><span class="fa fa-users"></span> Other Users</h3>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Request</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="other in PC.everyone" ng-if="!(other._id == PC.user._id)">
+        <td ng-bind="other.username"></td>
+        <td>
+          <button class="btn btn-xs btn-success"
+                     ng-click="PC.friendRequest(other)">Send Friend Request
+          </button>
+        </td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr ng-repeat="ask in PC.pendingFriends">
+        <td ng-bind="ask.her.username.username"></td>
+        <td>
+          <button class="btn btn-xs btn-warning"
+                     ng-click="PC.deleteRequest(ask)">Pending
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div id="chat">
+  <h3>Your Online Friends</h3>
+</div>
+
