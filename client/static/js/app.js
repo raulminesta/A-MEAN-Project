@@ -1,4 +1,4 @@
-ballyCyrk = angular.module('ballyCyrk', ['ngRoute', 'ngMessages']);
+ballyCyrk = angular.module('myApp', ['ngRoute', 'ngMessages']);
 
 // ------PARTIAL ROUTES------
 ballyCyrk.config(function($routeProvider){
@@ -19,6 +19,14 @@ ballyCyrk.config(function($routeProvider){
     templateUrl: './../static/views/partials/_profile.html',
     controller: 'profileController as PC'
   })
+  .when('/dashboard', {
+    templateUrl: 'static/partials/dashboard.html'
+  })
+  .when('/video', {
+    templateUrl: 'static/partials/video_channel.html'
+  })
   .otherwise({ redirectTo: '/'});
 });
+
+
 
