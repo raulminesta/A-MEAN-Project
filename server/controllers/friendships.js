@@ -19,10 +19,30 @@ module.exports ={
   pending: function(req, res){
     var pending = Friendship.find({'his.username': req.params.id,
                                     confirmed: false})
+    .populate('his.username')
     .populate('her.username')
     .exec(function(err, success){
       if (err){
         console.log("PENDING ERROR", err);
+        res.json(err);
+      } else {
+        var asked = [];
+        for (var i=0; i < success.length; i++){
+          asked.push(success[i]);
+        };
+        res.json(asked);
+      }
+    });
+  },
+
+  requested: function(req, res){
+    var requested = Friendship.find({'her.username': req.params.id,
+                                    confirmed: false})
+    .populate('his.username')
+    .populate('her.username')
+    .exec(function(err, success){
+      if (err){
+        console.log("REQUEST ERROR", err);
         res.json(err);
       } else {
         var asked = [];

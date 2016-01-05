@@ -22,10 +22,6 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     });
   }
 
-  this.friendRequest = function(her){
-    friendFactory.request(_this.user, her, this.pending);
-  }
-
   this.pending = function(){
     friendFactory.pending($routeParams.id, function(data){
       _this.pendingFriends = data;
@@ -48,13 +44,29 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     });
   }
 
+  this.requested = function(){
+    friendFactory.requested($routeParams.id, function(data){
+      _this.requestedFriendship = data;
+    })
+  }
+
+  this.acceptRequest = function(him){
+    console.log('from', him);
+  }
+
   this.deleteRequest = function(her){
     _this.everyone.push(her.her.username);
-    friendFactory.delete(her._id, this.pending);
+    friendFactory.delete(her._id, this.pending, this.requested);
   }
+
+  this.friendRequest = function(her){
+    friendFactory.request(_this.user, her, this.pending);
+  }
+
 
   this.currentUser();
   this.allUsers();
   this.pending();
   this.confirmed();
+  this.requested();
 })

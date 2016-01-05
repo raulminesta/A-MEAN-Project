@@ -19,6 +19,32 @@
       </div>
     </div>
   </div>
+    <!-- FRIEND REQUESTS -->
+  <h3><span class="fa fa-smile-o"></span> Friend Requests</h3>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Accept</th>
+        <th>Decline</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="request in PC.requestedFriendship">
+        <td ng-bind="request.his.username.username"></td>
+        <td>
+          <button class="btn btn-xs btn-success"
+                     ng-click="PC.acceptRequest(request)">Yes Please
+          </button>
+        </td>
+        <td>
+          <button class="btn btn-xs btn-danger"
+                     ng-click="PC.deleteRequest(request)">Not Today
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 <div class="inline2">
 <!-- OTHER USERS -->
@@ -40,6 +66,7 @@
         </td>
       </tr>
     </tbody>
+    <!-- PENDING FRIEND REQUESTS -->
     <tbody>
       <tr ng-repeat="ask in PC.pendingFriends">
         <td ng-bind="ask.her.username.username"></td>

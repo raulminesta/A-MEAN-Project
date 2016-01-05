@@ -7,14 +7,14 @@ ballyCyrk.factory('friendFactory', function($http){
     });
   }
 
-  factory.delete = function(id, callback){
+  factory.delete = function(id, callbackP, callbackR){
     $http.delete('/request/'+id).success(function(){
-      callback();
+      return
     });
   }
 
   factory.pending = function(id, callback){
-    $http.post('/pending/'+id).success(function(output){
+    $http.get('/pending/'+id).success(function(output){
       callback(output);
     });
   }
@@ -23,6 +23,12 @@ ballyCyrk.factory('friendFactory', function($http){
     $http.post('/confirm/'+id).success(function(output){
       callback(output);
     });
+  }
+
+  factory.requested = function(id, callback){
+    $http.get('/requests/'+id).success(function(output){
+      callback(output);
+    })
   }
 
   return factory;
