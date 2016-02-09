@@ -2,9 +2,11 @@
 <html lang='en' ng-app="myApp">
 <head>
   <meta charset="UTF-8" />
-  <title>A-MEAN-Project</title>
+  <title>The Mean Screen</title>
     <!-- jQuery & Stylesheets -->
   <script type="text/javascript" src="./static/js/jquery.js"></script>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
   <link rel="stylesheet" type="text/css" href="./static/css/style.css">
   <!-- Angular -->
   <script type="text/javascript" src='./static/js/angular.js'>
@@ -18,13 +20,22 @@
   <!-- FACTORIES -->
   <script type="text/javascript" src="./static/js/factories/user_f.js">
   </script>
+  <script type="text/javascript" src="./static/js/factories/friend_f.js">
+  </script>
   <!-- CONTROLLERS -->
+  <script type="text/javascript" src="./static/js/controllers/home_c.js">
+  </script>
   <script type="text/javascript" src="./static/js/controllers/login_c.js">
+  </script>
+  <script type="text/javascript" src="./static/js/controllers/signup_c.js">
+  </script>
+  <script type="text/javascript" src="./static/js/controllers/profile_c.js">
   </script>
 </head>
 <body>
   <div class="container">
     <header>
+      <h1>Passport Demo</h1>
     </header>
     <div ng-view>
     </div>

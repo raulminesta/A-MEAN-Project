@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "dependencies": {
+    "passport-youtube-v3": "^2.0.0"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -17,10 +21,5 @@
   "bugs": {
     "url": "https://github.com/Ballycyrk/A-MEAN-Project/issues"
   },
-  "homepage": "https://github.com/Ballycyrk/A-MEAN-Project#readme",
-  "dependencies": {
-    "body-parser": "^1.14.2",
-    "express": "^4.13.3",
-    "mongoose": "^4.3.4"
-  }
+  "homepage": "https://github.com/Ballycyrk/A-MEAN-Project#readme"
 }
