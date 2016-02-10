@@ -10,6 +10,7 @@ module.exports = function(app, passport){
   app.get('/requests/:id',  function(req,res) {friendship.requested(req, res)})
   app.post('/confirm/:id',  function(req,res) {friendship.confirm(req, res)})
   app.delete('/request/:id',function(req,res) {friendship.delete(req, res )})
+  app.post('/accept',        function(req,res) {friendship.accept(req, res )})
   // show the login form & pass any flash data if it exists
   // res.render('login.ejs', {message: req.flash('loginMessage') });
   app.post('/login',            passport.authenticate('local-login', {

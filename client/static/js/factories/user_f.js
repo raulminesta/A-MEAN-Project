@@ -3,7 +3,6 @@ ballyCyrk.factory('userFactory', function($http){
   var factory = {};
 
   factory.create = function(user, callback){
-    console.log('Factory!', user);
     $http.post('/signup', user).success(function(output){
       callback(output);
     })
@@ -53,7 +52,6 @@ ballyCyrk.factory('userFactory', function($http){
     if (!present){
       usersLoggedIn.push(user);
     };
-    console.log('loggedin', usersLoggedIn);
     callback(user);
   }
 

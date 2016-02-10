@@ -35,7 +35,6 @@ module.exports ={
     .populate('her.username')
     .exec(function(err, success){
       if (err){
-        console.log("PENDING ERROR", err);
         res.json(err);
       } else {
         var asked = [];
@@ -67,9 +66,9 @@ module.exports ={
   },
 
   confirm: function(req, res){
-    var pending = Friendship.find({'his.username': req.params.id,
-                                    confirmed: true})
+    var pending = Friendship.find({ confirmed: true })
     .populate('her.username')
+    .populate('his.username')
     .exec(function(err, success){
       if (err){
         console.log("CONFIRMED ERROR", err);
@@ -77,11 +76,26 @@ module.exports ={
       } else {
         var asked = [];
         for (var i=0; i < success.length; i++){
-          asked.push(success[i].her.username);
+          asked.push(success[i]);
         };
         res.json(asked);
       }
     });
+  },
+
+  accept: function(req, res){
+    console.log(req.body);
+    Friendship.findOne({_id: req.body.friend}, function(err, fini){
+      if (err) {
+        console.log("ACCEPT ERROR", err);
+        res.json(err);
+      } else {
+        fini.confirmed = true;
+        fini.save();
+        console.log("ACCET", fini);
+        res.json(fini);
+      }
+    })
   },
 
   delete: function(req, res){

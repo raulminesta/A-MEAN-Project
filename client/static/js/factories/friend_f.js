@@ -27,5 +27,11 @@ ballyCyrk.factory('friendFactory', function($http){
     })
   }
 
+  factory.accept = function(friend, callback){
+    $http.post('/accept', {friend: friend}).success(function(output){
+      console.log(output);
+    })
+  }
+
   return factory;
 })

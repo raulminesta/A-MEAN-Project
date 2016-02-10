@@ -42,6 +42,7 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
   this.confirmed = function(){
     friendFactory.confirmed($routeParams.id, function(data){
       _this.confirmedFriends = data;
+      console.log("4EVA:", data);
     });
   }
 
@@ -61,26 +62,32 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     })
   }
 
-  this.acceptRequest = function(him){
-    console.log('from', him);
+  this.acceptRequest = function(request){
+    friendFactory.accept(request._id, this.confirmed);
   }
 
   this.deleteRequest = function(her){
-    _this.everyone.push(her.her.username);
     friendFactory.delete(her._id);
     console.log("REMOVE:", her._id)
     for (var i = 0; i < _this.pendingFriends.length; i++) {
       if (her._id == _this.pendingFriends[i]._id) {
         _this.pendingFriends.splice(i,1);
         console.log("DO IT");
+        _this.everyone.push(her.her.username);
+        break;
+      }
+    }
+    for (var i = 0; i < _this.requestedFriendship.length; i++) {
+      if (her._id == _this.requestedFriendship[i]._id) {
+        _this.requestedFriendship.splice(i,1);
+        console.log("DO IT NOW");
+        _this.everyone.push(her.his.username);
         break;
       }
     }
   }
 
   this.friendRequest = function(her){
-    console.log("You:", _this.user);
-    console.log("them:", her);
     friendFactory.request(_this.user, her, this.pending);
   }
 
