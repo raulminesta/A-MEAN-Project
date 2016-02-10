@@ -1,9 +1,21 @@
+
 var mongoose      = require('mongoose');
 var Friendship    = mongoose.model('Friendship');
 var User          = mongoose.model('User');
 
 module.exports ={
   request: function(req, res){
+    var you = req.body.him._id;
+    var them = req.body.her._id;
+    Friendship.find({confirmed: false}, function(err, all){
+      for (var i = 0; i < all.length; i++) {
+        if (all[i].his.username == you && all[i].her.username == them) {
+          res.json({message: "You've already made this request"});
+        } else if (all[i].her.username == you && all[i].his.username == them){
+          res.json({message: "They've already sent you a request!"});
+        }
+      }
+    })
     var friendReq = new Friendship();
     friendReq.his.username = req.body.him;
     friendReq.her.username = req.body.her;

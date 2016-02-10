@@ -13,6 +13,7 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
   this.allUsers = function(){
     userFactory.index(function(data){
       _this.everyone = data;
+      console.log("EVERYONE:",_this.everyone);
     })
   }
 
@@ -25,6 +26,7 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
   this.pending = function(){
     friendFactory.pending($routeParams.id, function(data){
       _this.pendingFriends = data;
+      console.log("PENDING", data);
       var temp = _this.everyone;
       for (var p = 0; p < _this.pendingFriends.length; p++){
         for (var e =0; e < _this.everyone.length; e++){
@@ -34,7 +36,6 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
           }
         }
       }
-      _this.everyone = temp
     });
   }
 
@@ -47,6 +48,16 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
   this.requested = function(){
     friendFactory.requested($routeParams.id, function(data){
       _this.requestedFriendship = data;
+      console.log("REQUESTED", data);
+      var temp = _this.everyone;
+      for (var r = 0; r < _this.requestedFriendship.length; r++) {
+        for (var e = 0; e < _this.everyone.length; e++) {
+          if (_this.requestedFriendship[r].his.username._id == temp[e]._id) {
+            _this.everyone.splice(e,1);
+            break
+          }
+        }
+      }
     })
   }
 
@@ -56,10 +67,20 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
 
   this.deleteRequest = function(her){
     _this.everyone.push(her.her.username);
-    friendFactory.delete(her._id, this.pending, this.requested);
+    friendFactory.delete(her._id);
+    console.log("REMOVE:", her._id)
+    for (var i = 0; i < _this.pendingFriends.length; i++) {
+      if (her._id == _this.pendingFriends[i]._id) {
+        _this.pendingFriends.splice(i,1);
+        console.log("DO IT");
+        break;
+      }
+    }
   }
 
   this.friendRequest = function(her){
+    console.log("You:", _this.user);
+    console.log("them:", her);
     friendFactory.request(_this.user, her, this.pending);
   }
 
