@@ -1,12 +1,15 @@
 var express       = require('express');
 var path          = require('path');
-var port          = process.env.PORT || 8080;
+var https         = require('https');
+var fs 						= require('fs');
+var port          = process.env.PORT || 5001;
 var passport      = require('passport');
 var morgan        = require('morgan');
 var cookieParser  = require('cookie-parser');
 var bodyParser    = require('body-parser');
 var session       = require('express-session');
 var app           = express();
+
 
 // setup for express application
 app.use(express.static(path.join(__dirname, './client')));
@@ -29,7 +32,16 @@ var routes_setter = require('./server/config/routes.js');
 routes_setter(app, passport); //load our routes and pass in our app and
                               //fully configured passport.
 
-app.listen(port);
-  console.log('*******************');
-  console.log('********' + port + '*******');
-  console.log('*******************');
+var options = {
+    key: fs.readFileSync('certs/key.pem'),
+    cert: fs.readFileSync('certs/cert.pem')
+};
+
+var httpsServer = https.createServer(options, app);
+
+httpsServer.listen(port, function() {console.log('this should work')});
+
+// app.listen(port);
+//   console.log('*******************');
+//   console.log('********' + port + '*******');
+//   console.log('*******************');

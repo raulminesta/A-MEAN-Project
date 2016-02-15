@@ -23,7 +23,8 @@ ballyCyrk.config(function($routeProvider){
     templateUrl: 'static/partials/dashboard.html'
   })
   .when('/video', {
-    templateUrl: 'static/partials/video_channel.html'
+    templateUrl: 'static/partials/video_channel.html',
+    controller: 'VideoChatController as VCC'
   })
   .otherwise({ redirectTo: '/'});
 });
