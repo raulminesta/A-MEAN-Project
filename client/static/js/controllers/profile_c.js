@@ -41,8 +41,17 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
 
   this.confirmed = function(){
     friendFactory.confirmed($routeParams.id, function(data){
-      _this.confirmedFriends = data;
-      console.log("4EVA:", data);
+      _this.friends = data;
+      var temp = _this.everyone;
+      for (var p = 0; p < _this.friends.length; p++){
+        for (var e =0; e < _this.everyone.length; e++){
+          if(_this.friends[p]._id == temp[e]._id){
+            _this.everyone.splice(e,1);
+            break
+          }
+        }
+      }
+
     });
   }
 
@@ -80,7 +89,6 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     for (var i = 0; i < _this.requestedFriendship.length; i++) {
       if (her._id == _this.requestedFriendship[i]._id) {
         _this.requestedFriendship.splice(i,1);
-        console.log("DO IT NOW");
         _this.everyone.push(her.his.username);
         break;
       }
@@ -89,6 +97,10 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
 
   this.friendRequest = function(her){
     friendFactory.request(_this.user, her, this.pending);
+  }
+
+  this.callRequest = function(her){
+    console.log(her);
   }
 
 

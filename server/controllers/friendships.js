@@ -76,7 +76,14 @@ module.exports ={
       } else {
         var asked = [];
         for (var i=0; i < success.length; i++){
-          asked.push(success[i]);
+          if (req.params.id == success[i].his.username._id) {
+            asked.push(success[i].her.username);
+          console.log("HER********************", success[i].her);
+          }
+          if (req.params.id == success[i].her.username._id) {
+            asked.push(success[i].his.username);
+          console.log("HIS********************", success[i].his);
+          }
         };
         res.json(asked);
       }
