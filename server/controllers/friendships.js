@@ -1,9 +1,21 @@
+
 var mongoose      = require('mongoose');
 var Friendship    = mongoose.model('Friendship');
 var User          = mongoose.model('User');
 
 module.exports ={
   request: function(req, res){
+    var you = req.body.him._id;
+    var them = req.body.her._id;
+    Friendship.find({confirmed: false}, function(err, all){
+      for (var i = 0; i < all.length; i++) {
+        if (all[i].his.username == you && all[i].her.username == them) {
+          res.json({message: "You've already made this request"});
+        } else if (all[i].her.username == you && all[i].his.username == them){
+          res.json({message: "They've already sent you a request!"});
+        }
+      }
+    })
     var friendReq = new Friendship();
     friendReq.his.username = req.body.him;
     friendReq.her.username = req.body.her;
@@ -23,7 +35,6 @@ module.exports ={
     .populate('her.username')
     .exec(function(err, success){
       if (err){
-        console.log("PENDING ERROR", err);
         res.json(err);
       } else {
         var asked = [];
@@ -55,9 +66,9 @@ module.exports ={
   },
 
   confirm: function(req, res){
-    var pending = Friendship.find({'his.username': req.params.id,
-                                    confirmed: true})
+    var pending = Friendship.find({ confirmed: true })
     .populate('her.username')
+    .populate('his.username')
     .exec(function(err, success){
       if (err){
         console.log("CONFIRMED ERROR", err);
@@ -65,11 +76,33 @@ module.exports ={
       } else {
         var asked = [];
         for (var i=0; i < success.length; i++){
-          asked.push(success[i].her.username);
+          if (req.params.id == success[i].his.username._id) {
+            asked.push(success[i].her.username);
+          console.log("HER********************", success[i].her);
+          }
+          if (req.params.id == success[i].her.username._id) {
+            asked.push(success[i].his.username);
+          console.log("HIS********************", success[i].his);
+          }
         };
         res.json(asked);
       }
     });
+  },
+
+  accept: function(req, res){
+    console.log(req.body);
+    Friendship.findOne({_id: req.body.friend}, function(err, fini){
+      if (err) {
+        console.log("ACCEPT ERROR", err);
+        res.json(err);
+      } else {
+        fini.confirmed = true;
+        fini.save();
+        console.log("ACCET", fini);
+        res.json(fini);
+      }
+    })
   },
 
   delete: function(req, res){

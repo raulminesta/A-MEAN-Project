@@ -13,6 +13,7 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
   this.allUsers = function(){
     userFactory.index(function(data){
       _this.everyone = data;
+      console.log("EVERYONE:",_this.everyone);
     })
   }
 
@@ -25,6 +26,7 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
   this.pending = function(){
     friendFactory.pending($routeParams.id, function(data){
       _this.pendingFriends = data;
+      console.log("PENDING", data);
       var temp = _this.everyone;
       for (var p = 0; p < _this.pendingFriends.length; p++){
         for (var e =0; e < _this.everyone.length; e++){
@@ -34,33 +36,71 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
           }
         }
       }
-      _this.everyone = temp
     });
   }
 
   this.confirmed = function(){
     friendFactory.confirmed($routeParams.id, function(data){
-      _this.confirmedFriends = data;
+      _this.friends = data;
+      var temp = _this.everyone;
+      for (var p = 0; p < _this.friends.length; p++){
+        for (var e =0; e < _this.everyone.length; e++){
+          if(_this.friends[p]._id == temp[e]._id){
+            _this.everyone.splice(e,1);
+            break
+          }
+        }
+      }
+
     });
   }
 
   this.requested = function(){
     friendFactory.requested($routeParams.id, function(data){
       _this.requestedFriendship = data;
+      console.log("REQUESTED", data);
+      var temp = _this.everyone;
+      for (var r = 0; r < _this.requestedFriendship.length; r++) {
+        for (var e = 0; e < _this.everyone.length; e++) {
+          if (_this.requestedFriendship[r].his.username._id == temp[e]._id) {
+            _this.everyone.splice(e,1);
+            break
+          }
+        }
+      }
     })
   }
 
-  this.acceptRequest = function(him){
-    console.log('from', him);
+  this.acceptRequest = function(request){
+    friendFactory.accept(request._id, this.confirmed);
   }
 
   this.deleteRequest = function(her){
-    _this.everyone.push(her.her.username);
-    friendFactory.delete(her._id, this.pending, this.requested);
+    friendFactory.delete(her._id);
+    console.log("REMOVE:", her._id)
+    for (var i = 0; i < _this.pendingFriends.length; i++) {
+      if (her._id == _this.pendingFriends[i]._id) {
+        _this.pendingFriends.splice(i,1);
+        console.log("DO IT");
+        _this.everyone.push(her.her.username);
+        break;
+      }
+    }
+    for (var i = 0; i < _this.requestedFriendship.length; i++) {
+      if (her._id == _this.requestedFriendship[i]._id) {
+        _this.requestedFriendship.splice(i,1);
+        _this.everyone.push(her.his.username);
+        break;
+      }
+    }
   }
 
   this.friendRequest = function(her){
     friendFactory.request(_this.user, her, this.pending);
+  }
+
+  this.callRequest = function(her){
+    console.log(her);
   }
 
 

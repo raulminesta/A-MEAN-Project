@@ -24,6 +24,7 @@ module.exports ={
       if (err) {
         res.json(err);
       } else {
+        console.log(all);
         res.json(all);
       }
     });

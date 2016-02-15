@@ -7,11 +7,7 @@ ballyCyrk.factory('friendFactory', function($http){
     });
   }
 
-  factory.delete = function(id, callbackP, callbackR){
-    $http.delete('/request/'+id).success(function(){
-      return
-    });
-  }
+  factory.delete = function(id){ $http.delete('/request/'+id); }
 
   factory.pending = function(id, callback){
     $http.get('/pending/'+id).success(function(output){
@@ -28,6 +24,12 @@ ballyCyrk.factory('friendFactory', function($http){
   factory.requested = function(id, callback){
     $http.get('/requests/'+id).success(function(output){
       callback(output);
+    })
+  }
+
+  factory.accept = function(friend, callback){
+    $http.post('/accept', {friend: friend}).success(function(output){
+      console.log(output);
     })
   }
 

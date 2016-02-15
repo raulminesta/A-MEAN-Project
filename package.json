@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "mongoose": "^4.4.3",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.14.2",
     "connect-flash": "^0.1.1",

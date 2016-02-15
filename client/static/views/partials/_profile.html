@@ -79,7 +79,23 @@
     </tbody>
   </table>
 </div>
-<div id="chat">
-  <h3>Your Online Friends</h3>
-</div>
+    <!-- ONLINE FRIENDS -->
+  <h3><span class="fa fa-comments"></span>Friends</h3>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Online</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="friend in PC.friends" ng-if="!(friend._id == PC.user._id)">
+        <td ng-bind="friend.username"></td>
+        <td>
+          <button class="btn btn-xs btn-success"
+                     ng-click="PC.callRequest(friend)">Chat
+          </button>
+        </td>
+      </tr>
+    </tbody>
 
