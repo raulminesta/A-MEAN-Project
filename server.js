@@ -39,9 +39,25 @@ var options = {
 
 var httpsServer = https.createServer(options, app);
 
-httpsServer.listen(port, function() {console.log('this should work')});
+
+var server = httpsServer.listen(port, function() {console.log('this should work')});
+
 
 // app.listen(port);
 //   console.log('*******************');
 //   console.log('********' + port + '*******');
 //   console.log('*******************');
+
+///////////////////////
+//                   //
+// SOCKET CONNECTION //
+//                   //
+///////////////////////
+
+var io = require('socket.io').listen(server);
+io.sockets.on('connection', function(socket) {
+    console.log("We are using sockets");
+    console.log(socket.id);
+    // add socket stuff here
+})
+
