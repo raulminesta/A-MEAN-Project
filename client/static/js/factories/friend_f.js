@@ -7,7 +7,8 @@ ballyCyrk.factory('friendFactory', function($http){
     });
   }
 
-  factory.delete = function(id){ $http.delete('/request/'+id); }
+  factory.delete = function(him, her){
+    $http.post('/delete', {him: him, her: her}); }
 
   factory.pending = function(id, callback){
     $http.get('/pending/'+id).success(function(output){
@@ -27,9 +28,11 @@ ballyCyrk.factory('friendFactory', function($http){
     })
   }
 
-  factory.accept = function(friend, callback){
-    $http.post('/accept', {friend: friend}).success(function(output){
-      console.log(output);
+  factory.accept = function(him, her, callback){
+    console.log("YOU: ", him);
+    console.log("THEM: ", her);
+    $http.post('/accept', {him: him, her: her}).success(function(output){
+      callback();
     })
   }
 

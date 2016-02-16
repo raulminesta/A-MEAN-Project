@@ -8,8 +8,9 @@ ballyCyrk.factory('userFactory', function($http){
     })
   }
 
-  factory.index = function(callback){
-    $http.get('/users').success(function(output){
+  factory.index = function(id, callback){
+    $http.get('/users/'+id).success(function(output){
+      console.log("USER FACTORY ALL: ", output)
       callback(output);
     })
   }
