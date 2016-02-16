@@ -39,7 +39,7 @@ module.exports ={
       } else {
         var asked = [];
         for (var i=0; i < success.length; i++){
-          asked.push(success[i]);
+          asked.push(success[i].her.username);
         };
         res.json(asked);
       }
@@ -58,7 +58,7 @@ module.exports ={
       } else {
         var asked = [];
         for (var i=0; i < success.length; i++){
-          asked.push(success[i]);
+          asked.push(success[i].his.username);
         };
         res.json(asked);
       }
@@ -91,24 +91,30 @@ module.exports ={
   },
 
   accept: function(req, res){
-    console.log(req.body);
-    Friendship.findOne({_id: req.body.friend}, function(err, fini){
+    var you = req.body.him._id;
+    var them = req.body.her._id;
+    console.log("**************YOU**************", you);
+    console.log("**************THEM**************", them);
+    Friendship.findOne({'his.username': them, 'her.username': you}, function(err, fini){
       if (err) {
         console.log("ACCEPT ERROR", err);
         res.json(err);
       } else {
         fini.confirmed = true;
         fini.save();
-        console.log("ACCET", fini);
         res.json(fini);
       }
     })
   },
 
   delete: function(req, res){
-   Friendship.remove({_id:req.params.id}, function(err){
-    res.json();
-   });
+    var you = req.body.him._id;
+    var them = req.body.her._id;
+    Friendship.remove({'his.username': you, 'her.username': them}, function(err){
+      Friendship.remove({'his.username': them, 'her.username': you}, function(err){
+        res.json();
+      });
+    });
   }
 };
 

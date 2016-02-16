@@ -31,7 +31,7 @@
     </thead>
     <tbody>
       <tr ng-repeat="request in PC.requestedFriendship">
-        <td ng-bind="request.his.username.username"></td>
+        <td ng-bind="request.username"></td>
         <td>
           <button class="btn btn-xs btn-success"
                      ng-click="PC.acceptRequest(request)">Yes Please
@@ -69,7 +69,7 @@
     <!-- PENDING FRIEND REQUESTS -->
     <tbody>
       <tr ng-repeat="ask in PC.pendingFriends">
-        <td ng-bind="ask.her.username.username"></td>
+        <td ng-bind="ask.username"></td>
         <td>
           <button class="btn btn-xs btn-warning"
                      ng-click="PC.deleteRequest(ask)">Pending

@@ -24,8 +24,13 @@ module.exports ={
       if (err) {
         res.json(err);
       } else {
-        console.log(all);
-        res.json(all);
+        var others = []
+        for (var i=0; i < all.length; i++) {
+          if ( all[i]._id != req.params.id){
+            others.push(all[i]);
+          }
+        }
+        res.json(others);
       }
     });
   }
