@@ -4,7 +4,7 @@ var https         = require('https');
 var fs 						= require('fs');
 var port          = process.env.PORT || 5001;
 var passport      = require('passport');
-var morgan        = require('morgan');
+// var morgan        = require('morgan');
 var cookieParser  = require('cookie-parser');
 var bodyParser    = require('body-parser');
 var session       = require('express-session');
@@ -15,7 +15,7 @@ var app           = express();
 app.use(express.static(path.join(__dirname, './client')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true }));
-app.use(morgan('dev')); // log every request to the console
+// app.use(morgan('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 
 // required for passport
@@ -54,10 +54,48 @@ var server = httpsServer.listen(port, function() {console.log('this should work'
 //                   //
 ///////////////////////
 
+var users = {};
+var users_online = [];
+
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function(socket) {
     console.log("We are using sockets");
     console.log(socket.id);
+
+    socket.on("login", function(data) {
+    	users[socket.id] = {};
+    	users[socket.id].id = data.id;
+    	users[socket.id].username = data.username;
+
+    	users_online.push(users[socket.id]);
+
+    	console.log("users-online", users_online);
+    	io.sockets.emit("users-online", users_online);
+    });
+
+    socket.on("logout", function(data) {
+    	console.log("before", users_online);
+    	delete users[socket.id];
+    	for (var i = 0; i < users_online.length; i++) {
+    		if (users_online[i].id == data.user._id) {
+    			users_online.splice(i, 1);
+    		}
+    	}
+    	console.log("after", users_online);
+    	io.sockets.emit("users-online", users_online);
+    });
+
+    socket.on("disconnect", function() {
+        console.log(socket.id, "disconnected");
+        delete users[socket.id];
+        for (var i = 0; i < users_online.length; i++) {
+      		if (users_online[i].id == data.user._id) {
+      			users_online.splice(i, 1);
+      		}
+        }
+        io.sockets.emit("users-online", users_online); 
+    });
+
     // add socket stuff here
 })
 
