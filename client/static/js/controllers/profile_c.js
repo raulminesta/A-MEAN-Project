@@ -17,12 +17,10 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
   }
 
   socket.on("users-online", function(data) {
+    // rootscope allows for auto update when data callback updates
     $rootScope.$apply(function() {
-      console.log("1");
       _this.users_online = data;
     });
-    // look up rootscope.apply to reload automatically when users array changes
-    console.log("2");
     _this.users_online = data;
   });
 
