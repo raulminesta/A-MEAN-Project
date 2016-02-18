@@ -39,9 +39,9 @@ var options = {
 
 var httpsServer = https.createServer(options, app);
 
-httpsServer.listen(port, function() {console.log('this should work')});
+// httpsServer.listen(port, function() {console.log('this should work')});
 
-// app.listen(port);
-//   console.log('*******************');
-//   console.log('********' + port + '*******');
-//   console.log('*******************');
+app.listen(port);
+  console.log('*******************');
+  console.log('********' + port + '*******');
+  console.log('*******************');
