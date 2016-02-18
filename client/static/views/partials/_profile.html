@@ -89,12 +89,10 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="friend in PC.friends" ng-if="!(friend._id == PC.user._id)">
-        <td ng-bind="friend.username"></td>
+      <tr ng-repeat="user in PC.users_online" ng-if="!(user.id == PC.user._id)">
+        <td>{{user.username}}</td>
         <td>
-          <button class="btn btn-xs btn-success"
-                     ng-click="PC.callRequest(friend)">Chat
-          </button>
+          <button class="btn btn-xs btn-success" ng-click="PC.callRequest(friend)">Chat</button>
         </td>
       </tr>
     </tbody>

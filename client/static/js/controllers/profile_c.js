@@ -1,15 +1,30 @@
-ballyCyrk.controller('profileController', function(userFactory, friendFactory, $routeParams, $location){
+ballyCyrk.controller('profileController', function(userFactory, friendFactory, $routeParams, $location, $rootScope){
   var _this = this;
+
+  var socket = io.connect();
 
   this.currentUser = function(){
     userFactory.show($routeParams.id, function(data){
       _this.user = data;
-      console.log("YOU: ", data)
+      console.log("YOU: ", data);
+      socket.emit("login", {id: data._id,
+                            username: data.username});
+
       userFactory.confirmLogin(_this.user, function(data){
         if (!data) { $location.path('#/'); }
       });
     });
   }
+
+  socket.on("users-online", function(data) {
+    $rootScope.$apply(function() {
+      console.log("1");
+      _this.users_online = data;
+    });
+    // look up rootscope.apply to reload automatically when users array changes
+    console.log("2");
+    _this.users_online = data;
+  });
 
   this.allUsers = function(){
     userFactory.index($routeParams.id, function(data){
@@ -18,7 +33,8 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     })
   }
 
-  this.logout = function(){
+  this.logout = function() {
+    socket.emit("logout", {user: _this.user});
     userFactory.logout(_this.user, function(data){
       if (!data) { $location.path('#/'); };
     });
@@ -111,7 +127,9 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
 
   this.callRequest = function(her){
     console.log(her);
+    console.log("callRequest function working");
   }
+
 
 
   this.currentUser();
