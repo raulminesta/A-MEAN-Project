@@ -66,6 +66,7 @@ io.sockets.on('connection', function(socket) {
     	users[socket.id] = {};
     	users[socket.id].id = data.id;
     	users[socket.id].username = data.username;
+        users[socket.id].socket = socket.id;
 
     	users_online.push(users[socket.id]);
 
@@ -74,14 +75,12 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on("logout", function(data) {
-    	console.log("before", users_online);
     	delete users[socket.id];
     	for (var i = 0; i < users_online.length; i++) {
     		if (users_online[i].id == data.user._id) {
     			users_online.splice(i, 1);
     		}
     	}
-    	console.log("after", users_online);
     	io.sockets.emit("users-online", users_online);
     });
 
@@ -89,9 +88,9 @@ io.sockets.on('connection', function(socket) {
         console.log(socket.id, "disconnected");
         delete users[socket.id];
         for (var i = 0; i < users_online.length; i++) {
-      		if (users_online[i].id == data.user._id) {
-      			users_online.splice(i, 1);
-      		}
+            if (users_online[i].socket == socket.id) {
+                users_online.splice(i, 1);
+            }
         }
         io.sockets.emit("users-online", users_online); 
     });
