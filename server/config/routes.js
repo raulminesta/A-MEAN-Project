@@ -69,7 +69,8 @@ module.exports = function(app, passport){
 // =====================================
 // LOGOUT ==============================
 // =====================================
-  app.get('/logout', function(req, res) {
+  app.post('/logout', function(req, res) {
+    user.logout(req, res)
     req.logout();
     res.json({success: true});
   });
@@ -77,7 +78,6 @@ module.exports = function(app, passport){
 
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
-
   //if user is authenticated in the session, carry on
   if (req.isAuthenticated())
     return next();

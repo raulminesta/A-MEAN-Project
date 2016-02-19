@@ -1,4 +1,4 @@
-ballyCyrk.controller('profileController', function(userFactory, friendFactory, $routeParams, $location, $rootScope){
+ballyCyrk.controller('profileController', function(userFactory, friendFactory, $routeParams, $location){
   var _this = this;
 
   var socket = io.connect();
@@ -11,17 +11,13 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
                             username: data.username});
 
       userFactory.confirmLogin(_this.user, function(data){
+        console.log("PC>DATA", data)
         if (!data) { $location.path('#/'); }
       });
     });
   }
-
   socket.on("users-online", function(data) {
-    // rootscope allows for auto update when data callback updates
-    $rootScope.$apply(function() {
-      _this.users_online = data;
-    });
-    _this.users_online = data;
+    this.confirmed();
   });
 
   this.allUsers = function(){
@@ -32,6 +28,7 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
   }
 
   this.logout = function() {
+    console.log("LOG OUT");
     socket.emit("logout", {user: _this.user});
     userFactory.logout(_this.user, function(data){
       if (!data) { $location.path('#/'); };
@@ -127,7 +124,6 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     console.log(her);
     console.log("callRequest function working");
   }
-
 
 
   this.currentUser();

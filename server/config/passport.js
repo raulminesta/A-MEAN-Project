@@ -55,6 +55,7 @@ module.exports        = function(passport){
           var newUser = new User();
           // set the user's local credentials
           newUser.username = req.body.username;
+          newUser.online = true;
           newUser.local.email = req.body.email; // req.body.email?
           newUser.local.password = newUser.generateHash(password); // req.body.password?
           newUser.save(function(err) {
@@ -97,6 +98,8 @@ module.exports        = function(passport){
       if (!user.validPassword(password))
         return callback(null, false, err);
       // all is well return successful user
+      user.online = true;
+      user.save();
       return callback(null, user);
     });
   }));

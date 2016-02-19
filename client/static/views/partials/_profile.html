@@ -1,5 +1,5 @@
 <div class="page-header text-center">
-  <h1><span class="fa fa-anchor"></span> Profile Page</h1>
+  <h1><span class="fa fa-anchor"></span> Welcome <span ng-bind="_this.user.username"></span></h1>
   <button class="btn btn-danger btn-sm" ng-click="PC.logout()">Logout</button>
 </div>
 <div class="inline2">
@@ -89,8 +89,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="user in PC.users_online" ng-if="!(user.id == PC.user._id)">
-        <td>{{user.username}}</td>
+      <tr ng-repeat="friend in PC.friends">
+        <td ng-bind="friend.username"></td>
         <td>
           <button class="btn btn-xs btn-success" ng-click="PC.callRequest(friend)">Chat</button>
         </td>

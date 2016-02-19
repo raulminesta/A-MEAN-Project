@@ -10,7 +10,6 @@ ballyCyrk.factory('userFactory', function($http){
 
   factory.index = function(id, callback){
     $http.get('/users/'+id).success(function(output){
-      console.log("USER FACTORY ALL: ", output)
       callback(output);
     })
   }
@@ -35,10 +34,10 @@ ballyCyrk.factory('userFactory', function($http){
 
   factory.show = function(id, callback){
     $http.get('/user/'+id).success(function(output){
+      console.log("USER_F SHOW:", id);
       callback(output);
     })
   }
-
   factory.loggedin = function(user, callback){
     var i = 0
     while (i < usersLoggedIn.length){
@@ -55,8 +54,9 @@ ballyCyrk.factory('userFactory', function($http){
     };
     callback(user);
   }
-
   factory.confirmLogin = function(user, callback){
+    console.log("CONFIRM", user)
+    console.log("CONFIRM", usersLoggedIn)
     var i = 0
     while (i < usersLoggedIn.length){
       if (user._id == usersLoggedIn[i]._id){
@@ -70,16 +70,15 @@ ballyCyrk.factory('userFactory', function($http){
     if (present){
       callback(true);
     } else {
-      callback(false);
+      usersLoggedIn.push(user);
+      callback(true);
     }
   }
-
   factory.logout = function(user, callback){
     for (var i =0; i < usersLoggedIn.length; i++){
       if (user._id == usersLoggedIn[i]._id){
         usersLoggedIn.splice(i,1);
-        $http.get('/logout').success(function(data){
-          console.log('logoutrip', data);
+    $http.post('/logout', user).success(function(data){
         });
         callback(false);
         break;
