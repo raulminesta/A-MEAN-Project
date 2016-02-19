@@ -1,14 +1,16 @@
-ballyCyrk.controller('profileController', function(userFactory, friendFactory, $routeParams, $location, $rootScope){
+ballyCyrk.controller('profileController', function(userFactory, friendFactory, $routeParams, $location, $rootScope, $window){
   var _this = this;
 
   var socket = io.connect();
+  var currentUser;
+
 
   this.currentUser = function(){
     userFactory.show($routeParams.id, function(data){
       _this.user = data;
       console.log("YOU: ", data);
       socket.emit("login", {id: data._id, 
-                            username: data.username});
+                      username: data.username});
 
       userFactory.confirmLogin(_this.user, function(data){
         if (!data) { $location.path('#/'); }
@@ -21,14 +23,20 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     $rootScope.$apply(function() {
       _this.users_online = data;
     });
-    _this.users_online = data;
+
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].id == _this.user._id) {
+        currentUser = data[i];
+      }
+    }
+
   });
 
   this.allUsers = function(){
     userFactory.index($routeParams.id, function(data){
       _this.everyone = data;
       console.log("EVERYONE:",_this.everyone);
-    })
+    });
   }
 
   this.logout = function() {
@@ -113,12 +121,26 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     friendFactory.request(_this.user, her, this.pending);
   }
 
-  this.callRequest = function(her){
-    console.log(her);
-    console.log("callRequest function working");
+  this.requestCall = function(otherUser){
+    socket.emit("requestCall", {"receptionSocket": otherUser.socket,
+                                    "donorSocket": currentUser.socket,
+                                    "donorName": currentUser.username
+                                });
   }
 
-  
+  socket.on("requestingCall", function(data) {
+    console.log(data);
+    $rootScope.$apply(function() {
+      notie.confirm(data.donorName + " wants to video call", "Accept", "Decline",function() {
+        console.log("Call accepted");
+        socket.emit("callAccepted", {"donorSocket": data.donorSocket});
+      });
+    });
+  });
+
+  socket.on("callAccepted", function() {
+    console.log("Donor received answer");
+  });
 
   this.currentUser();
   this.allUsers();

@@ -28,6 +28,9 @@ app.use(passport.session()); // persistent login sessions
 require('./server/config/mongoose.js');
 require('./server/config/passport.js')(passport); //pass passport for configuration
 
+//  require Notie
+app.use('/notie', express.static(__dirname + '/node_modules/notie'));
+
 var routes_setter = require('./server/config/routes.js');
 routes_setter(app, passport); //load our routes and pass in our app and
                               //fully configured passport.
@@ -94,6 +97,14 @@ io.sockets.on('connection', function(socket) {
         }
         io.sockets.emit("users-online", users_online); 
     });
+
+    socket.on("requestCall", function(data) {
+        io.to(data.receptionSocket).emit("requestingCall", {"donorSocket": data.donorSocket, "donorName": data.donorName});
+    });
+
+    socket.on("callAccepted", function(data) {
+        io.to(data.donorSocket).emit("callAccepted");
+    })
 
     // add socket stuff here
 })
