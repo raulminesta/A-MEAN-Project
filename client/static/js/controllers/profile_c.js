@@ -57,7 +57,7 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
       console.log("FRIENDS: ", data);
       if (_this.requestedFriendship > 0) {
         var temp = _this.requestedFriendship;
-        for (var p = 0; p < _this.friends.length; p++){
+        for (var p = 0; p < _this.requestedFriendship.length; p++){
           for (var e =0; e < _this.requestedFriendship.length; e++){
             if(_this.friends[p]._id == temp[e]._id){
               _this.requestedFriendship.splice(e,1);
@@ -66,15 +66,15 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
           }
         }
       }
-      temp = _this.everyone;
-        for (var p = 0; p < _this.friends.length; p++){
-          for (var e =0; e < _this.everyone.length; e++){
-            if(_this.friends[p]._id == temp[e]._id){
-              _this.everyone.splice(e,1);
-              break
+        temp = _this.everyone;
+          for (var p = 0; p < _this.friends.length; p++){
+            for (var e =0; e < _this.everyone.length; e++){
+              if(_this.friends[p]._id == temp[e]._id){
+                _this.everyone.splice(e,1);
+                break
+              }
             }
           }
-        }
     });
   }
 

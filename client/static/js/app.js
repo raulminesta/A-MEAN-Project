@@ -1,4 +1,4 @@
-ballyCyrk = angular.module('myApp', ['ngRoute', 'ngMessages']);
+ballyCyrk = angular.module('myApp', ['ngRoute']);
 
 // ------PARTIAL ROUTES------
 ballyCyrk.config(function($routeProvider){

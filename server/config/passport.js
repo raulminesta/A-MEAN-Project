@@ -49,20 +49,40 @@ module.exports        = function(passport){
         if (err) { return res(err); }; //in demo they did not add {}.
         // check to see if theres already a user with that email
         if (user) {
-          return res(null, false, req.flash('signupMessage', 'That email is already in use.'));
+          return res(null, false, err);
         } else {
-          // if ther is no user with that email, create the user
-          var newUser = new User();
-          // set the user's local credentials
-          newUser.username = req.body.username;
-          newUser.online = true;
-          newUser.local.email = req.body.email; // req.body.email?
-          newUser.local.password = newUser.generateHash(password); // req.body.password?
-          newUser.save(function(err) {
-            if (err) {
-              throw (err);
+          User.findOne({email : email}, function(err, user) {
+            if (err) { return res(err); };
+            if (user) {
+              console.log("STEP 1");
+              user.username = req.body.username;
+              user.online = true;
+              user.local.email = req.body.email; // req.body.email?
+              user.local.password = user.generateHash(password);
+              user.save(function(err, result) {
+                if (err) {
+                  throw (err);
+                } else {
+                  console.log("STEP 2", result);
+                  return res(null, user);
+                }
+              })
             } else {
-              return res(null, newUser);
+              var newUser = new User();
+              // set the user's local credentials
+              newUser.email = req.body.email;
+              newUser.username = req.body.username;
+              newUser.online = true;
+              newUser.local.email = req.body.email; // req.body.email?
+              newUser.local.password = newUser.generateHash(password); // req.body.password?
+              newUser.save(function(err, result) {
+                if (err) {
+                  throw (err);
+                } else {
+                  console.log("STEP 3", result);
+                  return res(null, newUser);
+                }
+              });
             }
           });
         }
@@ -84,8 +104,8 @@ module.exports        = function(passport){
   // callback with email and password from our form
   // find a user whose email is the same as the forms email
   //we are checking to se if the user tyring to ogin already exists
-    User.findOne( {'local.email' : email}, function(err, user){
-      console.log('err',err);
+    User.findOne( {email : email}, function(err, user){
+      console.log('err',err)
       console.log('user', user);
       //if there are any errors, return those errors before anything else
       if(err)
@@ -154,25 +174,31 @@ module.exports        = function(passport){
     callbackURL     : configAuth.googleAuth.callbackURL,
   },
   function(token, refreshToken, profile, done) {
+    console.log(profile);
     // make the code asynchronous
     // User.findOne won't fire until we have all our data back from Google
     process.nextTick(function() {
       // try to find the user based on their google id
-      User.findOne({ 'google.id' : profile.id }, function(err, user) {
+      User.findOne({ email : profile.emails[0].value }, function(err, user) {
+        console.log("IN GOOGLE");
         if (err)
           return done(err);
         if (user) {
+          console.log("FOUND USER");
           return done(null, user);
         } else {
           // if the user isnt in our database, create a new user
           var newUser          = new User();
           // set all of the relevant information
           newUser.google.id    = profile.id;
+          newUser.email        = profile.emails[0].value;
+          newUser.username     = profile.name.givenName;
           newUser.google.token = token;
           newUser.google.name  = profile.displayName;
           newUser.google.email = profile.emails[0].value; // pull the first email
           // save the user
-          newUser.save(function(err) {
+          console.log("USER", newUser);
+          newUser.save(function(err, user) {
             if (err)
               throw err;
             return done(null, newUser);
