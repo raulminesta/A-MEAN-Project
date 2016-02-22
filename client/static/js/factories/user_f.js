@@ -1,6 +1,10 @@
-ballyCyrk.factory('userFactory', function($http){
+ballyCyrk.factory('userFactory', function($http, $cookies){
   var usersLoggedIn = [];
   var factory = {};
+
+  function setCookie(output) {
+    $cookies.currentUser = output;
+  }
 
   factory.create = function(user, callback){
     $http.post('/signup', user).success(function(output){
@@ -17,6 +21,8 @@ ballyCyrk.factory('userFactory', function($http){
 
   factory.loginUser = function(user, callback){
     $http.post('/login', user).success(function(output){
+      setCookie(output);
+      console.log($cookies.currentUser);
       callback(output);
     })
   }
@@ -75,6 +81,7 @@ ballyCyrk.factory('userFactory', function($http){
   }
 
   factory.logout = function(user, callback){
+    $cookies.currentUser = null;
     for (var i =0; i < usersLoggedIn.length; i++){
       if (user._id == usersLoggedIn[i]._id){
         usersLoggedIn.splice(i,1);

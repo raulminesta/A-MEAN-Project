@@ -103,8 +103,13 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on("callAccepted", function(data) {
-        io.to(data.donorSocket).emit("callAccepted");
-    })
+        io.to(data.donorSocket).emit("callAccepted", {"chatroomID": data.chatroomID
+                                                     });
+    });
+
+    socket.on("callDeclined", function(data) {
+        io.to(data.donorSocket).emit("callDeclined");
+    }); 
 
     // add socket stuff here
 })

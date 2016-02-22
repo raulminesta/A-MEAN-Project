@@ -1,7 +1,23 @@
-ballyCyrk.controller('VideoChatController', function () {
+ballyCyrk.controller('VideoChatController', function (userFactory, $cookies, $location) {
     _VCC = this;
     _VCC.audioValue = 'Mute';
     _VCC.videoValue = 'Pause';
+
+    this.back = function() {
+        // $location.path('/profile/' + $cookies.currentUser.user._id);
+        console.log($cookies.currentUser);
+    }
+
+    this.logout = function(){
+      if (!_this.user){
+        $location.path('#/')
+      } else {
+      userFactory.logout(_this.user, function(data){
+          console.log(data);
+          if (!data) { $location.path('#/'); };
+        });
+      }
+    }
 
     var video_out = document.getElementById('vid-box');
     var video_thumb = document.getElementById('vid-thumb');

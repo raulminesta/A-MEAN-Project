@@ -133,14 +133,36 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     $rootScope.$apply(function() {
       notie.confirm(data.donorName + " wants to video call", "Accept", "Decline",function() {
         console.log("Call accepted");
-        socket.emit("callAccepted", {"donorSocket": data.donorSocket});
+        var chatroomID = data.donorSocket + currentUser.socket;
+        chatroomID = chatroomID.replace(/#/g, '1');
+        console.log(chatroomID);
+        socket.emit("callAccepted", {"donorSocket": data.donorSocket,
+                                     "chatroomID": chatroomID
+                                    });
+        $rootScope.$apply(function() {
+          $location.path('/videoChat' + chatroomID);
+        });
+
+      }, function() {
+        console.log("Call declined");
+        socket.emit("callDeclined", {"donorSocket": data.donorSocket});
       });
     });
   });
 
-  socket.on("callAccepted", function() {
+  socket.on("callAccepted", function(data) {
     console.log("Donor received answer");
+    $rootScope.$apply(function() {
+      $location.path('/videoChat' + data.chatroomID);
+    });
   });
+
+  socket.on("callDeclined", function() {
+    $rootScope.$apply(function() {
+      console.log("callDeclined socket works");
+      notie.alert(3, "User declined your request", 2.5);
+    })
+  })
 
   this.currentUser();
   this.allUsers();
