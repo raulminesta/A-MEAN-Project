@@ -18,6 +18,9 @@ app.use(bodyParser.urlencoded({ extended:true }));
 // app.use(morgan('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 
+
+
+
 // required for passport
 app.use(session({ secret: 'ilovescotchscotchyscotchscotch',
                   resave: true,
@@ -29,7 +32,8 @@ require('./server/config/mongoose.js');
 require('./server/config/passport.js')(passport); //pass passport for configuration
 
 var routes_setter = require('./server/config/routes.js');
-routes_setter(app, passport); //load our routes and pass in our app and
+console.log(session);
+routes_setter(app, passport, session); //load our routes and pass in our app and
                               //fully configured passport.
 
 var options = {

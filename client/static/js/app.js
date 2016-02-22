@@ -26,6 +26,10 @@ ballyCyrk.config(function($routeProvider){
     templateUrl: 'static/partials/video_channel.html',
     controller: 'VideoChatController as VCC'
   })
+  .when('/donut',{
+    redirectTo:'/dashboard'
+
+  })
   .otherwise({ redirectTo: '/'});
 });
 

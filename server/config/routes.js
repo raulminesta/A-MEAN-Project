@@ -1,7 +1,7 @@
 var user                = require('../controllers/users.js');
 var friendship          = require('../controllers/friendships.js');
 
-module.exports = function(app, passport){
+module.exports = function(app, passport, session){
   app.get('/user/:id',      user.get)
   app.get('/users/:id',     user.index)
   app.get('/login',         user.nolog)
@@ -25,7 +25,6 @@ module.exports = function(app, passport){
     failureRedirect : '/signup' }),
     // function to specifically handle the callback and pass json back
     function(req, res) {
-      console.log('RES', req.user);
       res.json({user: req.user});
   });
 // =====================================
@@ -61,16 +60,16 @@ module.exports = function(app, passport){
 // we will want this protected so you have to be logged in to visit
 // we will use route middleware to verify this (the isLoggedIn function)
   app.get('/profile', isLoggedIn, function(req, res) {
-    console.log(req.user);
-    res.json({
-      user: req.user // get the user out of session and pass to template.
-    });
+    console.log("PROFILE IN ROUTES", req.user);
+    res.redirect('/#/profile/'+req.user._id);
   });
+
 
 // =====================================
 // LOGOUT ==============================
 // =====================================
   app.post('/logout', function(req, res) {
+    console.log("PROFILE IN ROUTES", req.user);
     user.logout(req, res)
     req.logout();
     res.json({success: true});
@@ -79,6 +78,8 @@ module.exports = function(app, passport){
 
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
+  // console.log(req.isAuthenticated());
+  // console.log(next());
   //if user is authenticated in the session, carry on
   if (req.isAuthenticated())
     return next();

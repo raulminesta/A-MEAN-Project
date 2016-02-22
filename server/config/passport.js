@@ -142,6 +142,8 @@ module.exports        = function(passport){
           return done(err);
         // if the user is found, then log them in
         if (user) {
+            user.online = true;
+            user.save();
             return done(null, user); // user found, return that user
         } else {
           // if there is no user found with that facebook id, create them
@@ -149,7 +151,7 @@ module.exports        = function(passport){
           // set all of the facebook information in our user model
           newUser.facebook.id    = profile.id; // set the users facebook id
           newUser.facebook.token = token; // we will save the token that facebook provides to the user
-          newUser.facebook.name  = profile.name.displayName; // look at the passport user profile to see how names are returned
+          newUser.facebook.name  = profile.name.givenName; // look at the passport user profile to see how names are returned
           newUser.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
           // save our user to the database
           newUser.save(function(err) {
@@ -180,10 +182,8 @@ module.exports        = function(passport){
           return done(err);
         if (user) {
           user.online = true;
-          console.log("******************SHZBOT*****************");
           console.log(user.online);
           user.save();
-          console.log("******************SHZBOT*****************");
           return done(null, user);
         } else {
           // if the user isnt in our database, create a new user

@@ -12,5 +12,10 @@ ballyCyrk.controller('homeController', function(userFactory, $location){
       console.log('HOME.GOOGLE', data);
     });
   };
+
+  this.test = function(){
+    userFactory.test2();
+  }
 });
+
 
