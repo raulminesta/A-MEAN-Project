@@ -2,6 +2,8 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
   var usersLoggedIn = [];
   var factory = {};
 
+  var socket = io.connect();
+
   function setCookie(output) {
     $cookies.putObject('currentUser', output);
   }
@@ -25,6 +27,8 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
     })
   }
 
+  factory.socket = socket;
+
   factory.facebook = function(callback){
     $http.get('/auth/facebook').success(function(output){
       callback(output);
@@ -40,6 +44,10 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
   factory.show = function(id, callback){
     $http.get('/user/'+id).success(function(output){
       setCookie(output);
+      // might need to put socket emit here to prevent more users
+      // populating in users_online server side
+      // socket.emit("login", {id: output._id, 
+      //                 username: output.username});
       callback(output);
     })
   }
@@ -58,6 +66,8 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
     if (!present){
       usersLoggedIn.push(user);
     };
+    // socket.emit("login", {id: user._id, 
+    //                 username: user.username});
     callback(user);
   }
 

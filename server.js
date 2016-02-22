@@ -66,12 +66,15 @@ io.sockets.on('connection', function(socket) {
     console.log(socket.id);
 
     socket.on("login", function(data) {
-    	users[socket.id] = {};
-    	users[socket.id].id = data.id;
-    	users[socket.id].username = data.username;
-        users[socket.id].socket = socket.id;
+        if (!users[socket.id]) {
+            users[socket.id] = {};
+            users[socket.id].id = data.id;
+            users[socket.id].username = data.username;
+            users[socket.id].socket = socket.id;
 
-    	users_online.push(users[socket.id]);
+            users_online.push(users[socket.id]);
+        }
+    	
 
     	console.log("users-online", users_online);
     	io.sockets.emit("users-online", users_online);

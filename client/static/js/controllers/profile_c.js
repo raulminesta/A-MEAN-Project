@@ -1,46 +1,45 @@
 ballyCyrk.controller('profileController', function(userFactory, friendFactory, $routeParams, $location, $rootScope, $window){
   var _this = this;
 
-  var socket = io.connect();
-  var currentUser;
+   var currentUser;
 
 
   this.currentUser = function(){
     userFactory.show($routeParams.id, function(data){
       _this.user = data;
       console.log("YOU: ", data);
-      socket.emit("login", {id: data._id, 
-                      username: data.username});
+      userFactory.socket.emit("login", {id: data._id, 
+                                  username: data.username});
 
-      userFactory.confirmLogin(_this.user, function(data){
-        if (!data) { $location.path('#/'); }
-      });
+      // userFactory.confirmLogin(_this.user, function(data){
+      //   if (!data) { $location.path('#/'); }
+      // });
     });
   }
 
-  socket.on("users-online", function(data) {
-    // rootscope allows for auto update when data callback updates
-    $rootScope.$apply(function() {
-      _this.users_online = data;
-    });
-
-    for (var i = 0; i < data.length; i++) {
-      if (data[i].id == _this.user._id) {
-        currentUser = data[i];
-      }
-    }
-
-  });
-
+  
   this.allUsers = function(){
     userFactory.index($routeParams.id, function(data){
       _this.everyone = data;
       console.log("EVERYONE:",_this.everyone);
     });
+    userFactory.socket.on("users-online", function(data) {
+      // rootscope allows for auto update when data callback updates
+      $rootScope.$apply(function() {
+        _this.users_online = data;
+      });
+
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].id == _this.user._id) {
+          currentUser = data[i];
+        }
+      }
+    });
+
   }
 
   this.logout = function() {
-    socket.emit("logout", {user: _this.user});
+    userFactory.socket.emit("logout", {user: _this.user});
     userFactory.logout(_this.user, function(data){
       if (!data) { $location.path('#/'); };
     });
@@ -122,13 +121,13 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
   }
 
   this.requestCall = function(otherUser){
-    socket.emit("requestCall", {"receptionSocket": otherUser.socket,
+    userFactory.socket.emit("requestCall", {"receptionSocket": otherUser.socket,
                                     "donorSocket": currentUser.socket,
                                     "donorName": currentUser.username
                                 });
   }
 
-  socket.on("requestingCall", function(data) {
+  userFactory.socket.on("requestingCall", function(data) {
     console.log(data);
     $rootScope.$apply(function() {
       notie.confirm(data.donorName + " wants to video call", "Accept", "Decline",function() {
@@ -136,7 +135,7 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
         var chatroomID = data.donorSocket + currentUser.socket;
         chatroomID = chatroomID.replace(/#/g, '1');
         console.log(chatroomID);
-        socket.emit("callAccepted", {"donorSocket": data.donorSocket,
+        userFactory.socket.emit("callAccepted", {"donorSocket": data.donorSocket,
                                      "chatroomID": chatroomID
                                     });
         $rootScope.$apply(function() {
@@ -145,19 +144,19 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
 
       }, function() {
         console.log("Call declined");
-        socket.emit("callDeclined", {"donorSocket": data.donorSocket});
+        userFactory.socket.emit("callDeclined", {"donorSocket": data.donorSocket});
       });
     });
   });
 
-  socket.on("callAccepted", function(data) {
+  userFactory.socket.on("callAccepted", function(data) {
     console.log("Donor received answer");
     $rootScope.$apply(function() {
       $location.path('/videoChat' + data.chatroomID);
     });
   });
 
-  socket.on("callDeclined", function() {
+  userFactory.socket.on("callDeclined", function() {
     $rootScope.$apply(function() {
       console.log("callDeclined socket works");
       notie.alert(3, "User declined your request", 2.5);
