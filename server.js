@@ -66,6 +66,7 @@ io.sockets.on('connection', function(socket) {
     console.log(socket.id);
 
     socket.on("login", function(data) {
+        
         if (!users[socket.id]) {
             users[socket.id] = {};
             users[socket.id].id = data.id;
