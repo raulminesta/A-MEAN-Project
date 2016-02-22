@@ -1,20 +1,22 @@
-ballyCyrk.controller('VideoChatController', function (userFactory, $cookies, $location) {
+ballyCyrk.controller('VideoChatController', function (userFactory, $cookies, $location, $rootScope) {
     _VCC = this;
     _VCC.audioValue = 'Mute';
     _VCC.videoValue = 'Pause';
 
+
     this.back = function() {
         // $location.path('/profile/' + $cookies.currentUser.user._id);
-        console.log($cookies.currentUser);
+        console.log($cookies.getObject('currentUser'));
     }
 
     this.logout = function(){
-      if (!_this.user){
+      socket.emit("logout", {user: $cookies.getObject('currentUser')});
+      if (!$cookies.getObject('currentUser')){
         $location.path('#/')
       } else {
-      userFactory.logout(_this.user, function(data){
-          console.log(data);
-          if (!data) { $location.path('#/'); };
+          userFactory.logout($cookies.getObject('currentUser'), function(data){
+              console.log(data);
+              if (!data) { $location.path('#/'); };
         });
       }
     }
