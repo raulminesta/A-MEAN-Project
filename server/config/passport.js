@@ -54,7 +54,6 @@ module.exports        = function(passport){
           User.findOne({email : email}, function(err, user) {
             if (err) { return res(err); };
             if (user) {
-              console.log("STEP 1");
               user.username = req.body.username;
               user.online = true;
               user.local.email = req.body.email; // req.body.email?
@@ -63,7 +62,6 @@ module.exports        = function(passport){
                 if (err) {
                   throw (err);
                 } else {
-                  console.log("STEP 2", result);
                   return res(null, user);
                 }
               })
@@ -79,7 +77,6 @@ module.exports        = function(passport){
                 if (err) {
                   throw (err);
                 } else {
-                  console.log("STEP 3", result);
                   return res(null, newUser);
                 }
               });
@@ -174,17 +171,19 @@ module.exports        = function(passport){
     callbackURL     : configAuth.googleAuth.callbackURL,
   },
   function(token, refreshToken, profile, done) {
-    console.log(profile);
     // make the code asynchronous
     // User.findOne won't fire until we have all our data back from Google
     process.nextTick(function() {
       // try to find the user based on their google id
       User.findOne({ email : profile.emails[0].value }, function(err, user) {
-        console.log("IN GOOGLE");
         if (err)
           return done(err);
         if (user) {
-          console.log("FOUND USER");
+          user.online = true;
+          console.log("******************SHZBOT*****************");
+          console.log(user.online);
+          user.save();
+          console.log("******************SHZBOT*****************");
           return done(null, user);
         } else {
           // if the user isnt in our database, create a new user
@@ -193,11 +192,11 @@ module.exports        = function(passport){
           newUser.google.id    = profile.id;
           newUser.email        = profile.emails[0].value;
           newUser.username     = profile.name.givenName;
+          newUser.online       = true;
           newUser.google.token = token;
           newUser.google.name  = profile.displayName;
           newUser.google.email = profile.emails[0].value; // pull the first email
           // save the user
-          console.log("USER", newUser);
           newUser.save(function(err, user) {
             if (err)
               throw err;
