@@ -22,6 +22,7 @@ ballyCyrk.factory('userFactory', function($http, $cookies){
 
   factory.loginUser = function(user, callback){
     $http.post('/login', user).success(function(output){
+      usersLoggedIn = [];
       callback(output);
     })
   }

@@ -29,8 +29,6 @@ ballyCyrk.factory('friendFactory', function($http){
   }
 
   factory.accept = function(him, her, callback){
-    console.log("YOU: ", him);
-    console.log("THEM: ", her);
     $http.post('/accept', {him: him, her: her}).success(function(output){
       callback();
     })
