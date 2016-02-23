@@ -1,0 +1,27 @@
+<div class="page-header text-center">
+	<h1><span class="fa fa-anchor"></span> Video Chat Room</h1>
+	<button class="btn btn-danger btn-sm" ng-click="VCC.logout()">Logout</button>
+	<button class="btn btn-success btn-sm" ng-click="VCC.back()">Back to home page</button>
+</div>
+<div class="inline2">
+	<!-- used to see the other person -->
+	<div id='vid-box'></div>
+	<!-- used to see yourself -->
+	<div id='vid-thumb'></div>
+
+	<form id='login-form'>
+	    <input type='text' placeholder='add a username!' ng-model='VCC.currentUser.username'>
+	    <button ng-click='VCC.login()'>Login!</button>
+	</form>
+
+	<form id='call-form'>
+	    <input type='text' placeholder='call a user!' ng-model='VCC.number'>
+	    <button ng-click='VCC.makeCall()'>Call!</button>
+	</form>
+
+	<div id='idCall'>
+	    <button ng-click='VCC.end()'>End</button>
+	    <button ng-click='VCC.mute()' ng-bind='VCC.audioValue'></button>
+	    <button ng-click='VCC.pause()' ng-bind='VCC.videoValue'></button>
+	</div>
+</div>

@@ -30,6 +30,9 @@ app.use(passport.session()); // persistent login sessions
 require('./server/config/mongoose.js');
 require('./server/config/passport.js')(passport); //pass passport for configuration
 
+//  require Notie
+app.use('/notie', express.static(__dirname + '/node_modules/notie'));
+
 var routes_setter = require('./server/config/routes.js');
 console.log(session);
 routes_setter(app, passport, session); //load our routes and pass in our app and
@@ -63,38 +66,53 @@ io.sockets.on('connection', function(socket) {
     console.log("We are using sockets");
     console.log(socket.id);
 
-    // socket.on("login", function(data) {
-    // 	users[socket.id] = {};
-    // 	users[socket.id].id = data.id;
-    // 	users[socket.id].username = data.username;
-    //     users[socket.id].socket = socket.id;
+    socket.on("login", function(data) {
 
-    // 	users_online.push(users[socket.id]);
+        if (!users[socket.id]) {
+            users[socket.id] = {};
+            users[socket.id].id = data.id;
+            users[socket.id].username = data.username;
+            users[socket.id].socket = socket.id;
 
-    // 	console.log("users-online", users_online);
-    // 	io.sockets.emit("users-online", users_online);
-    // });
+            users_online.push(users[socket.id]);
+        }
 
-    // socket.on("logout", function(data) {
-    // 	delete users[socket.id];
-    // 	for (var i = 0; i < users_online.length; i++) {
-    // 		if (users_online[i].id == data.user._id) {
-    // 			users_online.splice(i, 1);
-    // 		}
-    // 	}
-    // 	io.sockets.emit("users-online", users_online);
-    // });
 
-    // socket.on("disconnect", function() {
-    //     console.log(socket.id, "disconnected");
-    //     delete users[socket.id];
-    //     for (var i = 0; i < users_online.length; i++) {
-    //         if (users_online[i].socket == socket.id) {
-    //             users_online.splice(i, 1);
-    //         }
-    //     }
-    //     io.sockets.emit("users-online", users_online);
-    // });
+    	console.log("users-online", users_online);
+    	io.sockets.emit("users-online", users_online);
+    });
 
-    // add socket stuff here
+    socket.on("logout", function(data) {
+    	delete users[socket.id];
+    	for (var i = 0; i < users_online.length; i++) {
+    		if (users_online[i].id == data.user._id) {
+    			users_online.splice(i, 1);
+    		}
+    	}
+    	io.sockets.emit("users-online", users_online);
+    });
+
+    socket.on("disconnect", function() {
+        console.log(socket.id, "disconnected");
+        delete users[socket.id];
+        for (var i = 0; i < users_online.length; i++) {
+            if (users_online[i].socket == socket.id) {
+                users_online.splice(i, 1);
+            }
+        }
+        io.sockets.emit("users-online", users_online);
+    });
+
+    socket.on("requestCall", function(data) {
+        io.to(data.receptionSocket).emit("requestingCall", {"donorSocket": data.donorSocket, "donorName": data.donorName});
+    });
+
+    socket.on("callAccepted", function(data) {
+        io.to(data.donorSocket).emit("callAccepted", {"chatroomID": data.chatroomID
+                                                     });
+    });
+
+    socket.on("callDeclined", function(data) {
+        io.to(data.donorSocket).emit("callDeclined");
+    });
 })

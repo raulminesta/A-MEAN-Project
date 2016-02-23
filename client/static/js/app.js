@@ -1,4 +1,5 @@
-ballyCyrk = angular.module('myApp', ['ngRoute']);
+
+ballyCyrk = angular.module('myApp', ['ngRoute', 'ngCookies']);
 
 // ------PARTIAL ROUTES------
 ballyCyrk.config(function($routeProvider){
@@ -22,13 +23,13 @@ ballyCyrk.config(function($routeProvider){
   .when('/dashboard', {
     templateUrl: 'static/partials/dashboard.html'
   })
-  .when('/video', {
+  .when('/video/:id', {
     templateUrl: 'static/partials/video_channel.html',
     controller: 'VideoChatController as VCC'
   })
-  .when('/donut',{
-    redirectTo:'/dashboard'
-
+  .when('/videoChat/:idOne/:idTwo', {
+    templateUrl: './../static/views/partials/_videochatroom.html',
+    controller: 'VideoChatController as VCC'
   })
   .otherwise({ redirectTo: '/'});
 });

@@ -92,7 +92,7 @@
       <tr ng-repeat="friend in PC.friends">
         <td ng-bind="friend.username"></td>
         <td>
-          <button class="btn btn-xs btn-success" ng-click="PC.callRequest(friend)">Chat</button>
+          <button class="btn btn-xs btn-success" ng-click="PC.requestCall(PC.users_online[$index])">Chat</button>
         </td>
       </tr>
     </tbody>

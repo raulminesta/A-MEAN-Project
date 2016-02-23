@@ -1,12 +1,15 @@
-ballyCyrk.controller('profileController', function(userFactory, friendFactory, $routeParams, $location){
+
+ballyCyrk.controller('profileController', function(userFactory, friendFactory, $routeParams, $location, $rootScope, $window){
   var _this = this;
 
-  var socket = io.connect();
+   var currentUser;
+
 
   this.currentUser = function(){
     userFactory.show($routeParams.id, function(data){
       _this.user = data;
       console.log("YOU: ", data);
+<<<<<<< HEAD
       socket.emit("login", {id: data._id,
                             username: data.username});
 
@@ -24,12 +27,24 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     userFactory.index($routeParams.id, function(data){
       _this.everyone = data;
       console.log("EVERYONE:",_this.everyone);
-    })
+    });
+    userFactory.socket.on("users-online", function(data) {
+      // rootscope allows for auto update when data callback updates
+      $rootScope.$apply(function() {
+        _this.users_online = data;
+      });
+
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].id == _this.user._id) {
+          currentUser = data[i];
+        }
+      }
+    });
+
   }
 
   this.logout = function() {
-    console.log("LOG OUT");
-    socket.emit("logout", {user: _this.user});
+    userFactory.socket.emit("logout", {user: _this.user});
     userFactory.logout(_this.user, function(data){
       if (!data) { $location.path('#/'); };
     });
@@ -120,8 +135,48 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     friendFactory.request(_this.user, her, this.pending);
   }
 
-  this.callRequest = function(her){
+  this.requestCall = function(otherUser){
+    userFactory.socket.emit("requestCall", {"receptionSocket": otherUser.socket,
+                                    "donorSocket": currentUser.socket,
+                                    "donorName": currentUser.username
+                                });
   }
+
+  userFactory.socket.on("requestingCall", function(data) {
+    console.log(data);
+    $rootScope.$apply(function() {
+      notie.confirm(data.donorName + " wants to video call", "Accept", "Decline",function() {
+        console.log("Call accepted");
+        var chatroomID = data.donorSocket + currentUser.socket;
+        chatroomID = chatroomID.replace(/#/g, '1');
+        console.log(chatroomID);
+        userFactory.socket.emit("callAccepted", {"donorSocket": data.donorSocket,
+                                     "chatroomID": chatroomID
+                                    });
+        $rootScope.$apply(function() {
+          $location.path('/videoChat' + chatroomID);
+        });
+
+      }, function() {
+        console.log("Call declined");
+        userFactory.socket.emit("callDeclined", {"donorSocket": data.donorSocket});
+      });
+    });
+  });
+
+  userFactory.socket.on("callAccepted", function(data) {
+    console.log("Donor received answer");
+    $rootScope.$apply(function() {
+      $location.path('/videoChat' + data.chatroomID);
+    });
+  });
+
+  userFactory.socket.on("callDeclined", function() {
+    $rootScope.$apply(function() {
+      console.log("callDeclined socket works");
+      notie.alert(3, "User declined your request", 2.5);
+    })
+  })
 
   this.currentUser();
   this.allUsers();

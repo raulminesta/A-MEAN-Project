@@ -1,7 +1,25 @@
-ballyCyrk.controller('VideoChatController', function () {
+ballyCyrk.controller('VideoChatController', function (userFactory, $cookies, $location, $rootScope) {
     _VCC = this;
     _VCC.audioValue = 'Mute';
     _VCC.videoValue = 'Pause';
+
+
+    this.back = function() {
+        console.log('/profile/' + $cookies.getObject('currentUser')._id);
+        $location.path('/profile/' + $cookies.getObject('currentUser')._id);
+    }
+
+    this.logout = function(){
+      userFactory.socket.emit("logout", {user: $cookies.getObject('currentUser')});
+      if (!$cookies.getObject('currentUser')){
+        $location.path('#/')
+      } else {
+          userFactory.logout($cookies.getObject('currentUser'), function(data){
+              console.log(data);
+              if (!data) { $location.path('#/'); };
+        });
+      }
+    }
 
     var video_out = document.getElementById('vid-box');
     var video_thumb = document.getElementById('vid-thumb');
@@ -11,8 +29,8 @@ ballyCyrk.controller('VideoChatController', function () {
         // get the information from there
         var phone = window.phone = PHONE({
             number : _VCC.currentUser.username || 'Anonymous',
-            publish_key : 'publish_key',
-            subscribe_key: 'subscribe_key',
+            publish_key : 'pub-c-ab154ce3-2bea-4bc0-ab76-92bdff619817',
+            subscribe_key: 'sub-c-e6500642-b106-11e5-a8f0-0619f8945a4f',
             ssl: true
         });
 
@@ -40,10 +58,10 @@ ballyCyrk.controller('VideoChatController', function () {
             alert('login first!'); 
         } else  {
             phone.dial(_VCC.number);
-            // ctrl.isOnline(_VCC.number, function (isOn) {
-            //     if (isOn) { ctrl.dial(_VCC.number); }
-            //     else { alert('User is Offline'); }
-            // });
+            ctrl.isOnline(_VCC.number, function (isOn) {
+                if (isOn) { ctrl.dial(_VCC.number); }
+                else { alert('User is Offline'); }
+            });
         }
     }
 
