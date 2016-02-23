@@ -102,8 +102,6 @@ module.exports        = function(passport){
   // find a user whose email is the same as the forms email
   //we are checking to se if the user tyring to ogin already exists
     User.findOne( {email : email}, function(err, user){
-      console.log('err',err)
-      console.log('user', user);
       //if there are any errors, return those errors before anything else
       if(err)
         return callback(err);
@@ -182,7 +180,6 @@ module.exports        = function(passport){
           return done(err);
         if (user) {
           user.online = true;
-          console.log(user.online);
           user.save();
           return done(null, user);
         } else {

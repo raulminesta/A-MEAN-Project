@@ -1,10 +1,9 @@
 var express       = require('express');
 var path          = require('path');
 var https         = require('https');
-var fs 						= require('fs');
+var fs 			  = require('fs');
 var port          = process.env.PORT || 5001;
 var passport      = require('passport');
-// var morgan        = require('morgan');
 var cookieParser  = require('cookie-parser');
 var bodyParser    = require('body-parser');
 var session       = require('express-session');

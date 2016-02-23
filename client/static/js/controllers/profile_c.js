@@ -66,15 +66,15 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
           }
         }
       }
-        temp = _this.everyone;
-          for (var p = 0; p < _this.friends.length; p++){
-            for (var e =0; e < _this.everyone.length; e++){
-              if(_this.friends[p]._id == temp[e]._id){
-                _this.everyone.splice(e,1);
-                break
-              }
-            }
+      temp = _this.everyone;
+      for (var p = 0; p < _this.friends.length; p++){
+        for (var e =0; e < _this.everyone.length; e++){
+          if(_this.friends[p]._id == temp[e]._id){
+            _this.everyone.splice(e,1);
+            break
           }
+        }
+      }
     });
   }
 
@@ -121,10 +121,7 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
   }
 
   this.callRequest = function(her){
-    console.log(her);
-    console.log("callRequest function working");
   }
-
 
   this.currentUser();
   this.allUsers();
