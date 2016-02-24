@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var fs = require('fs');
 var path = require('path');
 // connect to database
-mongoose.connect('mongodb://localhost/MEAN_black_belt');
+mongoose.connect('mongodb://localhost/MeanScreen');
 // variable that points to folder where models live
 var models_path = path.join(__dirname, './../models');
 // read all of the files in the models folder

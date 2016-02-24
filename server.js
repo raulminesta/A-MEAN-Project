@@ -58,8 +58,8 @@ var server = httpsServer.listen(port, function() {console.log('this should work'
 //                   //
 ///////////////////////
 
-// var users = {};         <- I don't think this is needed with the way
-// var users_online = [];  <- we've set up our models.
+var users = {};      //   <- I don't think this is needed with the way
+var users_online = []; // <- we've set up our models.
 
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function(socket) {

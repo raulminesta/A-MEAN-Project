@@ -9,7 +9,6 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     userFactory.show($routeParams.id, function(data){
       _this.user = data;
       console.log("YOU: ", data);
-<<<<<<< HEAD
       socket.emit("login", {id: data._id,
                             username: data.username});
 
@@ -70,9 +69,10 @@ ballyCyrk.controller('profileController', function(userFactory, friendFactory, $
     friendFactory.confirmed($routeParams.id, function(data){
       _this.friends = data;
       console.log("FRIENDS: ", data);
-      if (_this.requestedFriendship > 0) {
+      if (_this.requestedFriendship) {
+        console.log("FRIENDS: ", _this.requestedFriendship.length);
         var temp = _this.requestedFriendship;
-        for (var p = 0; p < _this.requestedFriendship.length; p++){
+        for (var p = 0; p < _this.friends.length; p++){
           for (var e =0; e < _this.requestedFriendship.length; e++){
             if(_this.friends[p]._id == temp[e]._id){
               _this.requestedFriendship.splice(e,1);
