@@ -103,6 +103,7 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on("requestCall", function(data) {
+        console.log("HELLLO KRIS", data);
         io.to(data.receptionSocket).emit("requestingCall", {"donorSocket": data.donorSocket, "donorName": data.donorName});
     });
 
