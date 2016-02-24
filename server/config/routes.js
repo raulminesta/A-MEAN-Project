@@ -1,7 +1,7 @@
 var user                = require('../controllers/users.js');
 var friendship          = require('../controllers/friendships.js');
 
-module.exports = function(app, passport, session){
+module.exports = function(app, passport){
   app.get('/user/:id',      user.get)
   app.get('/users/:id',     user.index)
   app.get('/login',         user.nolog)
@@ -11,6 +11,14 @@ module.exports = function(app, passport, session){
   app.post('/confirm/:id',  friendship.confirm)
   app.post('/delete',       friendship.delete)
   app.post('/accept',       friendship.accept)
+// ===========================================================================
+// ======================= AUTHENTICATE (FIRST LOGIN) ========================
+// ===========================================================================
+
+// =====================================
+// LOCAL ROUTES ========================
+// =====================================
+// route for facebook authentication and login
   // show the login form & pass any flash data if it exists
   // res.render('login.ejs', {message: req.flash('loginMessage') });
   app.post('/login',            passport.authenticate('local-login', {

@@ -57,7 +57,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="other in PC.everyone" ng-if="!(other._id == PC.user._id)">
+      <tr ng-repeat="other in PC.everyone">
         <td ng-bind="other.username"></td>
         <td>
           <button class="btn btn-xs btn-success"
@@ -91,8 +91,11 @@
     <tbody>
       <tr ng-repeat="friend in PC.friends">
         <td ng-bind="friend.username"></td>
-        <td>
+        <td ng-if="friend.online">
           <button class="btn btn-xs btn-success" ng-click="PC.requestCall(PC.users_online[$index])">Chat</button>
+        </td>
+        <td ng-if="friend.online == false">
+          <button class="btn btn-xs btn" ng-click="PC.requestCall(PC.users_online[$index])">Offline</button>
         </td>
       </tr>
     </tbody>
